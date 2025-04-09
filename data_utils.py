@@ -53,10 +53,10 @@ class NV:
         self.B = B
         self.Delta = Delta
    
-    def Ramsey(self, n, dt):
+    def Ramsey(self, n, dt, T2s=2e-6):
         t = np.array([i * dt for i in range(1, n+1)])
         
-        return  1 / 2 - 1 / 2 * np.cos(2 * np.pi * (self.B * 2.8e10 + self.Delta) * t)
+        return  1 / 2 - 1 / 2 * np.cos(2 * np.pi * (self.B * 2.8e10 + self.Delta) * t) * np.exp(-t / T2s)
 
 # generate image
 class WFImage:
