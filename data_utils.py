@@ -52,7 +52,12 @@ class NV:
     def __init__(self, B, Delta=0):
         self.B = B
         self.Delta = Delta
-   
+        
+#     def Ramsey(self, n, dt):
+#         t = np.array([i * dt for i in range(1, n+1)])
+        
+#         return  1 / 2 - 1 / 2 * np.cos(2 * np.pi * (self.B * 2.8e10 + self.Delta) * t)
+    
     def Ramsey(self, n, dt, T2s=2e-6):
         t = np.array([i * dt for i in range(1, n+1)])
         
@@ -138,7 +143,8 @@ class Image_generate:
             pic = WFImage(NVinte, self.nvinfo, self.iminfo).PLimage()
             
             # add noise on the contrast
-            noise = np.sqrt(1 / self.iminfo.N)
+            # for convenience, SNR_actual = 10*log10(SNR**2)
+            noise = 1 / self.iminfo.SNR
             Noise = np.random.randn(self.iminfo.image_xpixel, self.iminfo.image_ypixel) * noise
             Noise = np.float32(Noise)
             ImgSeq.append(pic + Noise)
