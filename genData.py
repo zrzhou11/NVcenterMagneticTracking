@@ -1,11 +1,11 @@
 import sys
-sys.path.append("/public/home/zrzhou/NVLattice")
 from multiprocessing import Pool
 from data_utils import *
 from system_config import *
 import pickle
 import time
 import os
+import json
 
 def make_dirs(filename):
     # make dirs
@@ -43,9 +43,9 @@ def genData(num, ex, ey, ez, file, NVpara, nvinfo, iminfo):
         
 
 if __name__ == '__main__':
-    pos_std_xy = 50e-9
-    pos_std_z = 10e-9
-    spt_std = 30e3
+    pos_std_xy = 30e-9
+    pos_std_z = 6e-9
+    spt_std = 9e3
     # train and test 8000
     N = 8000
     filename = "data/main"       
@@ -60,18 +60,25 @@ if __name__ == '__main__':
     # save the NV's setting
     with open(filename + '.pkl', 'wb') as p:
         pickle.dump(NVpara, p)
-        
-    iminfo.N = 10000
+            
+    with open(filename + '-nvinfo.json', 'w') as p:
+        json.dump(vars(nvinfo), p)
+    with open(filename + '-iminfo.json', 'w') as p:
+        json.dump(vars(iminfo), p)
 
     def mpg(num):
         ex = ex_array[num]
         ey = ey_array[num]
-        ez = 0
+        ez = 100e-9
         genData(num, ex, ey, ez, filename, NVpara[num], nvinfo, iminfo)
 
         return 0
     
-    # multiprocess generation, work on linux(may have some issue in windows)
+    '''
+    Multiprocess generation, work on linux(may have some issue on windows)
+    In windows, the subprocess can not view the variables like ex_array, eyarray, filename......
+    One can use starmap to input all those variables into every subprocess, which may cost more computation resources.
+    '''
     with Pool(20) as p:
         nums = [i for i in range(N)]
         p.map(mpg, nums)

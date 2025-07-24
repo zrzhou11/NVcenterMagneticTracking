@@ -14,7 +14,7 @@ class NVinfo:
         self.xnum = 5
         self.ynum = 5
         # 80Oe produce a magnetic moment of 2e-16 emu (magnetic nanoparticle)
-        self.mnp_m = 2e-16 * 1e-3 #J/T
+        self.mnp_m = 1.2e-15 * 1e-3 #J/T
         
 class Imageinfo:
     def __init__(self):
@@ -25,7 +25,7 @@ class Imageinfo:
         self.timesteps = 20
         self.dt = 1e-7
         self.detuning = 2e6
-        self.N = 10000
+        self.SNR = 10   # for convenience, SNR_actual = 10*log10(SNR**2)
         self.NA = 1.5
         
 nvinfo = NVinfo()

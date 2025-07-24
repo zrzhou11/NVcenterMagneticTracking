@@ -11,6 +11,7 @@ from model import *
 from system_config import *
 from model_test import *
 
+
 class Training_configs:
     def __init__(self, net_num, data_root, exp_num):
         self.net_num = net_num
@@ -32,9 +33,10 @@ def test(epoch, test_dataloader, model, device, loss_fn):
     model.eval()
     result = model(signal_image)
     loss_test = loss_fn(result, label_image)
-    # we define a measure on accuracy
-    accuracy_test = checka(result, label_image)
-    print("epoch: {}-----  accuracy: {} --- loss: {}".format(epoch, accuracy_test, loss_test.cpu().detach()))
+    Errors = calError(result, labeln)
+    RMSE = np.sqrt((Errors**2).sum(axis=1).mean(axis=0))
+    
+    print("epoch: {}-----  RMSE: {}nm --- loss: {}".format(epoch, RMSE * 1e9, loss_test.cpu().detach()))
     model.train()
         
     return 
@@ -103,7 +105,7 @@ if __name__ == '__main__':
                               
     net_num = 1
     data = "data/main"
-    name = 'main'
+    name = "main"
     tconfigs = Training_configs(net_num, data, name)
     tconfigs.train_size = 6400
     tconfigs.gpu_num = 0

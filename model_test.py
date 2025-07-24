@@ -4,33 +4,22 @@ import os
 from system_config import *
 
 
-# define an accuracy measure: True if error < label pixel length
-def checka(result, label_image):
-    result = result.cpu().detach().numpy()
-    label_image = label_image.cpu().detach().numpy()
-    nums = len(result)
-    count = 0
-    for i in range(nums):
-        x_r, y_r = get_xy(result[i])
-        x_l, y_l = get_xy(label_image[i])
-        error = np.sqrt((x_r - x_l)**2 + (y_r - y_l)**2) 
-        if error < 1:
-            count += 1
-
-    return count / nums
-
-# calculate the errors, set the label pixel length as unit
-def opdiff(result, labeln):
+# calculate the errors
+def calError(result, labeln):
     result = result.cpu().detach().numpy()
     labeln = labeln.cpu().detach().numpy()
     
     nums = len(result)
     resultxy = np.zeros((nums, 2))
-    labelxy = ((labeln[:, 0:2] - nvinfo.lat) / nvinfo.lat / 2 * 9)
+    labelxy = (labeln[:, 0:2] - nvinfo.lat)
+    
+    x_unit = nvinfo.lat * 2 / (iminfo.label_xpixel - 1)
+    y_unit = nvinfo.lat * 2 / (iminfo.label_ypixel - 1)
+
     for i in range(nums):
         x_r, y_r = get_xy(result[i])
-        resultxy[i][0] = x_r
-        resultxy[i][1] = y_r
+        resultxy[i][0] = x_r * x_unit
+        resultxy[i][1] = y_r * y_unit
 
     return resultxy - labelxy 
 
